@@ -39,6 +39,9 @@
   --global-color-neutral-xxx-dark: #35374d;
   --global-color-neutral-xxxx-dark: #20223a;
 
+  --global-color-error: red;
+  --global-input-error-borderColor: red;
+
   /* global page settings */
   --global-html-color: var(--global-color-neutral-xxxx-dark);
   --global-html-backgroundColor: var(--global-color-neutral-xxxx-light);
@@ -72,6 +75,8 @@
   --global-input-focus-boxShadowColor: var(--global-color-alpha-x-transparent);
   --global-input-focus-boxShadow: 0 0 0 3px
     var(--global-input-focus-boxShadowColor);
+
+    
 }
 
 /*------------------------------------*\
@@ -555,6 +560,31 @@ input::placeholder {
   fill: var(--logo__path--3--Fill);
 }
 
+.c-like__symbol{
+  height: 24px;
+  width: 24px;
+  fill:var(--color-neutral-x-light);
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  transform-origin: bottom;
+}
+.c-like__symbol:active{
+  width: 20px;
+  height: 20px;
+  fill:#D80027;
+  animation-name: bounce-4;
+  animation-timing-function: ease;
+}
+@keyframes bounce-4{
+  0%   { transform: scale(1,1)    translateY(0); }
+  10%  { transform: scale(1.1,.9) translateY(0); }
+  30%  { transform: scale(.9,1.1) translateY(-20px); }
+  50%  { transform: scale(1,1)    translateY(0); }
+  100% { transform: scale(1,1)    translateY(0); }
+  
+}
+
+
 /*
     Component: Card
     ---
@@ -607,11 +637,24 @@ input::placeholder {
     ---
     Everything form related here
 */
+.has-error {
+  --label-color: var(--global-color-error);
+  --input-borderColor: var(--global-input-error-borderColor);
+}
 
 .c-form-field--option {
   display: flex;
   align-items: center;
 }
+
+.c-form-field--rel {
+  position: relative;
+}
+
+.c-form-field:focus-within .c-label-floating {
+  transform: translateY( -24px );
+}
+
 
 /*
     Component: Input
@@ -624,7 +667,7 @@ input::placeholder {
   -moz-appearance: none;
   appearance: none;
   width: 100%;
-  border: 1px solid var(--global-input-borderColor);
+  border: 1px solid var(--input-borderColor, var(--global-input-borderColor));
   border-radius: var(--global-borderRadius);
   background-color: var(--global-input-backgroundColor);
   color: var(--global-input-color);
@@ -670,16 +713,29 @@ more padding on the right to avoid overlap
 */
 
 .c-label {
-  --label-color: var(--global-color-neutral-xx-dark);
+  /* --label-color: var( --label-color, --global-color-neutral-xx-dark); */
   margin-bottom: 0;
   padding-bottom: var(--global-whitespace-sm);
   font-size: 14px;
   line-height: 16px;
-  color: var(--label-color);
+  color: var(--label-color, var(--global-color-neutral-xx-dark));
+  
 }
 
 .c-label--option {
   padding-bottom: 0;
+}
+
+.c-label-floating{
+  position: absolute;
+  top: 12px;
+  left: 8px;
+  padding: 4px 8px;
+  will-change: transform;
+  transform: translateY( 0 );
+  transition: transform 200ms ease-in-out;
+  box-shadow: 0 0 4px 4px rgba(255,255,255,0.8);
+  background: white;
 }
 
 /*
@@ -952,14 +1008,23 @@ more padding on the right to avoid overlap
     ---
     Password toggle custom checkbox
 */
-
-/* Span even hoog maken als de rest, relative --> c-toggle-password */
-.c-toggle-password-container {
-  display: block;
-  position: relative;
+.c-toggle-password__icon{
+  width: 24px;
+  height: 24px;
+  fill: var(--global-color-neutral-dark);
 }
 
-.c-togglePassword {
+.c-toggle-password__icon--hide{
+  display: none;
+}
+
+/* Span even hoog maken als de rest, relative --> c-toggle-password */
+.c-password-container{
+  position: relative;
+  display: block;
+}
+
+.c-toggle-password{
   display: block;
   position: absolute;
   /*Bovenaan midden positioneren van svg */
@@ -968,39 +1033,22 @@ more padding on the right to avoid overlap
   bottom: 0;
   /*Bovenaan midden positioneren van svg */
 }
+
 /*midden positioneren van svg */
 .c-toggle-password__label {
   height: 100%;
   display: flex;
   align-items: center;
   /* Zorgen da ge een beetje ernaast kunt klikken */
-  padding: 0 var(--global-whitespace-md);
+  padding: 0px 8px;
 }
 
-.c-toggle-password__icon {
-  display: block;
-  width: 24px;
-  width: calc(var(--global-baseline) * 3);
-  fill: var(--global-color-neutral-light);
-}
-
-/* Zorgen dat als je op de checkbox klikt de svg's wisselen */
-.c-toggle-password__icon--hide {
-  display: none;
-}
-/* Zorgen dat als je op de checkbox klikt de svg's wisselen */
-.c-toggle-password__checkbox:checked
-  + .c-toggle-password__label
-  .c-toggle-password__icon--hide {
+.c-toggle-password__checkbox:checked + .c-toggle-password__label .c-toggle-password__icon--hide{
   display: block;
 }
-.c-toggle-password__checkbox:checked
-  + .c-toggle-password__label
-  .c-toggle-password__icon--show {
+.c-toggle-password__checkbox:checked + .c-toggle-password__label .c-toggle-password__icon--show{
   display: none;
 }
-/* Zorgen dat als je op de checkbox klikt de svg's wisselen */
-
 /*------------------------------------*\
 #UTILITIES
 \*------------------------------------*/
